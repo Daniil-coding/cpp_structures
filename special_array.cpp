@@ -5,6 +5,7 @@ private:
     vector<int> first, second;
 
 public:
+    special_array() {};
     special_array(vector<T>);
     special_array(unsigned n);
     unsigned size();
@@ -12,6 +13,7 @@ public:
     void sort(bool (*comp)(T, T));
     void sort();
     void reverse();
+    void resize(unsigned);
     void print(string sep=" ", string end="\n");
     void insert(T, unsigned);
     void push_back(T);
@@ -19,8 +21,11 @@ public:
     void erase(unsigned);
     void pop_back();
     void pop_front();
+    void move(int);
     T min_element();
     T max_element();
+    T front();
+    T back();
     T & operator [] (unsigned i)
     {
         if (i >= first.size())
@@ -70,6 +75,12 @@ template <typename T>
 bool special_array<T>::empty()
 {
     return this->size() == 0;
+}
+
+template <typename T>
+void special_array<T>::resize(unsigned n)
+{
+    second.resize(n);
 }
 
 template <typename T>
@@ -128,6 +139,29 @@ void special_array<T>::print(string sep, string end)
 }
 
 template <typename T>
+void special_array<T>::move(int k)
+{
+    if (k > 0)
+    {
+        for (int i = 0; i < k; i++)
+        {
+            T elem = back();
+            pop_back();
+            push_front(elem);
+        }
+    }
+    else
+    {
+        for (int i = k; i > 0; i++)
+        {
+            T elem = front();
+            pop_front();
+            push_back(elem);
+        }
+    }
+}
+
+template <typename T>
 void special_array<T>::reverse()
 {
     int i = 0, j = size() - 1;
@@ -172,6 +206,18 @@ T special_array<T>::max_element()
     T x = *std::max_element(first.begin(), first.end());
     T y = *std::max_element(second.begin(), second.end());
     return x > y ? x : y;
+}
+
+template <typename T>
+T special_array<T>::front()
+{
+    return at(0);
+}
+
+template <typename T>
+T special_array<T>::back()
+{
+    return at(size() - 1);
 }
 
 template <typename T>
@@ -270,4 +316,24 @@ template <typename T>
 inline long long special_array<T>::sum()
 {
     return sum(0, size());
+}
+
+template <typename T>
+istream & operator >> (istream & in, special_array<T> & a)
+{
+    for (unsigned i = 0; i < a.size(); i++)
+        in >> a[i];
+    return in;
+}
+
+template <typename T>
+ostream & operator << (ostream & out, special_array<T> a)
+{
+    if (a.size() == 0)
+        return out;
+    for (unsigned i = 0; i < a.size() - 1; i++)
+        out << a[i] << ' ';
+    if (a.size() > 0)
+        out << a[a.size() - 1] << '\n';
+    return out;
 }
